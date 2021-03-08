@@ -21,6 +21,9 @@
   <a href="https://codecov.io/gh/jw3126/UnitfulRecipes.jl">
     <img src="https://img.shields.io/codecov/c/github/jw3126/UnitfulRecipes.jl/master?label=Codecov&logo=codecov&logoColor=white&style=flat-square">
   </a>
+  <a href="https://github.com/invenia/BlueStyle">
+    <img src="https://img.shields.io/badge/code%20style-blue-4495d1.svg">
+  </a>
 </p>
 
 [UnitfulRecipes.jl](https://github.com/jw3126/UnitfulRecipes.jl) provides recipes for plotting figures ([Plots.jl](https://github.com/JuliaPlots/Plots.jl)) when using data with units ([Unitful.jl](https://github.com/PainterQubits/Unitful.jl)).
