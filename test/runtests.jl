@@ -227,6 +227,17 @@ end
     @test yguide(plt,1) == "s"
 end
 
+@testset "Strings" begin
+    str = "Something"
+    pstr = UnitfulRecipes.ProtectedString(str)
+    @test pstr == str
+    @test isvalid(pstr, 2)
+    @test codeunit(pstr) == codeunit(str)
+    @test ncodeunits(pstr) == ncodeunits(str)
+    @test pointer(pstr) == pointer(pstr)
+    @test pointer(pstr, 2) == pointer(pstr, 2)
+end
+
 @testset "Errors" begin
     x = rand(10) * u"mm"
     ex = rand(10) * u"μm"
