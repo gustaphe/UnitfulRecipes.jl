@@ -77,10 +77,12 @@ URtuples = [", in ", (", in (", ")"), ("[", "] = (", ")"), ':', ('$', '$'), (':'
 plot([plot(y, ylab="mass", title=repr(s), unitformat=s) for s in URtuples]...)
 
 # For *extreme* customizability, you can also supply a function that turns two
-# arguments (label, unit) into a string:
+# arguments (label, unit) into a string. If the function has a method for just
+# a single unit argument, it will also affect axes without explicit labels.
 
 formatter(l, u) = string("\$\\frac{\\textrm{", l, "}}{\\mathrm{", u, "}}\$")
-plot(y, ylab="mass", unitformat=formatter)
+formatter(u) = string("\$\\mathrm{", u, "}\$")
+plot(y, y, ylab="mass", unitformat=formatter)
 
 # ## Axis unit
 
