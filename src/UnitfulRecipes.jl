@@ -20,6 +20,10 @@ function fixaxis!(attr, x, axisletter)
     err = Symbol(axisletter, :error)       # xerror, yerror, zerror
     axisunit = Symbol(axisletter, :unit)   # xunit, yunit, zunit
     axis = Symbol(axisletter, :axis)       # xaxis, yaxis, zaxis
+    # If label is given and empty, do not append unit
+    if isempty(get(attr, axislabel, "no"))
+        attr[axislabel] = ProtectedString("")
+    end
     # Get the unit
     u = pop!(attr, axisunit, unit(eltype(x)))
     # If the subplot already exists, get unit from its axis label
@@ -185,11 +189,13 @@ end
 append_unit_if_needed!(attr, key, label::ProtectedString, u) = nothing
 append_unit_if_needed!(attr, key, label::UnitfulString, u) = nothing
 function append_unit_if_needed!(attr, key, label::Nothing, u)
-    attr[key] = UnitfulString(string(u), u)
+    attr[key] = UnitfulString(format_unit_label(u, get(attr, :unitformat, nothing)), u)
 end
 function append_unit_if_needed!(attr, key, label::S, u) where {S <: AbstractString}
     if !isempty(label)
         attr[key] = UnitfulString(S(format_unit_label(label, u, get(attr, :unitformat, :round))), u)
+    else
+        attr[key] = UnitfulString(S(format_unit_label(u, get(attr, :unitformat, nothing))), u)
     end
 end
 
@@ -206,6 +212,16 @@ format_unit_label(l, u, f::NTuple{2, Char}) = string(l, ' ', f[1], u, f[2])
 format_unit_label(l, u, f::NTuple{3, Char}) = string(f[1], l, ' ', f[2], u, f[3])
 format_unit_label(l, u, f::Bool) = f ? format_unit_label(l, u, :round) : format_unit_label(l, u, nothing)
 
+format_unit_label(u, f::Nothing) = string(u)
+format_unit_label(u, f::Function) = f(u)
+format_unit_label(u, f::AbstractString) = string(f, u)
+format_unit_label(u, f::NTuple{2, <:AbstractString}) = string(f[1], u, f[2])
+format_unit_label(u, f::NTuple{3, <:AbstractString}) = string(f[1], f[2], u, f[3])
+format_unit_label(u, f::Char) = string(f, ' ', u)
+format_unit_label(u, f::NTuple{2, Char}) = string(f[1], u, f[2])
+format_unit_label(u, f::NTuple{3, Char}) = string(f[1], ' ', f[2], u, f[3])
+format_unit_label(u, f::Bool) = f ? format_unit_label(u, :round) : format_unit_label(u, nothing)
+
 const UNIT_FORMATS = Dict(
                           :round => ('(', ')'),
                           :square => ('[', ']'),
@@ -219,6 +235,7 @@ const UNIT_FORMATS = Dict(
                           :verbose => " in units of ",
                          )
 
-format_unit_label(l, u, f::Symbol) = format_unit_label(l,u,UNIT_FORMATS[f])
+format_unit_label(l, u, f::Symbol) = format_unit_label(l, u, UNIT_FORMATS[f])
+format_unit_label(u, f::Symbol) = format_unit_label(u, UNIT_FORMATS[f])
 
 end # module

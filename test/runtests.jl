@@ -70,7 +70,7 @@ end
         @test yguide(plot(x, y, xlabel=P"hello", ylabel=P"hello")) == "hello"
     end
 
-    @testset "unitformat" begin
+    @testset "unitformat (l, u)" begin
         args = (x, y)
         kwargs = (:xlabel=>"hello", :ylabel=>"hello")
         @test yguide(plot(args...; kwargs..., unitformat=nothing)) == "hello s"
@@ -93,6 +93,30 @@ end
         @test yguide(plot(args...; kwargs..., unitformat=:slashcurly)) == "hello / {s}"
         @test yguide(plot(args...; kwargs..., unitformat=:slashangle)) == "hello / <s>"
         @test yguide(plot(args...; kwargs..., unitformat=:verbose)) == "hello in units of s"
+    end
+
+    @testset "unitformat (u)" begin
+        args = (x, y)
+        @test yguide(plot(args...; unitformat=nothing)) == "s"
+        @test yguide(plot(args...; unitformat=u -> string(u, " is the unit"))) == "s is the unit"
+        @test yguide(plot(args...; unitformat=", dear ")) == ", dear s"
+        @test yguide(plot(args...; unitformat=(", dear ", " esq."))) == ", dear s esq."
+        @test yguide(plot(args...; unitformat=("well ", ", dear ", " esq."))) == "well , dear s esq."
+        @test yguide(plot(args...; unitformat='?')) == "? s"
+        @test yguide(plot(args...; unitformat=('<', '>'))) == "<s>"
+        @test yguide(plot(args...; unitformat=('A', 'B', 'C'))) == "A BsC"
+        @test yguide(plot(args...; unitformat=false)) == "s"
+        @test yguide(plot(args...; unitformat=true)) == "(s)"
+        @test yguide(plot(args...; unitformat=:round)) == "(s)"
+        @test yguide(plot(args...; unitformat=:square)) == "[s]"
+        @test yguide(plot(args...; unitformat=:curly)) == "{s}"
+        @test yguide(plot(args...; unitformat=:angle)) == "<s>"
+        @test yguide(plot(args...; unitformat=:slash)) == "/ s"
+        @test yguide(plot(args...; unitformat=:slashround)) == " / (s)"
+        @test yguide(plot(args...; unitformat=:slashsquare)) == " / [s]"
+        @test yguide(plot(args...; unitformat=:slashcurly)) == " / {s}"
+        @test yguide(plot(args...; unitformat=:slashangle)) == " / <s>"
+        @test yguide(plot(args...; unitformat=:verbose)) == " in units of s"
     end
 end
 
