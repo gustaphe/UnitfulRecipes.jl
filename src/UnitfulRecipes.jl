@@ -213,7 +213,7 @@ format_unit_label(l, u, f::NTuple{3, Char}) = string(f[1], l, ' ', f[2], u, f[3]
 format_unit_label(l, u, f::Bool) = f ? format_unit_label(l, u, :round) : format_unit_label(l, u, nothing)
 
 format_unit_label(u, f::Nothing) = string(u)
-format_unit_label(u, f::Function) = f(u)
+format_unit_label(u, f::Function) = applicable(f, u) ? f(u) : string(u)
 format_unit_label(u, f::AbstractString) = string(f, u)
 format_unit_label(u, f::NTuple{2, <:AbstractString}) = string(f[1], u, f[2])
 format_unit_label(u, f::NTuple{3, <:AbstractString}) = string(f[1], f[2], u, f[3])
