@@ -203,7 +203,7 @@ end
 Surround unit string with specified delimiters
 =============================================#
 format_unit_label(l, u, f::Nothing) = string(l, ' ', u)
-format_unit_label(l, u, f::Function) = f(l, u)
+format_unit_label(l, u, f::Function) = applicable(f, l, u) ? f(l, u) : string(l, ' ', f(u))
 format_unit_label(l, u, f::AbstractString) = string(l, f, u)
 format_unit_label(l, u, f::NTuple{2, <:AbstractString}) = string(l, f[1], u, f[2])
 format_unit_label(l, u, f::NTuple{3, <:AbstractString}) = string(f[1], l, f[2], u, f[3])
