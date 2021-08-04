@@ -144,3 +144,7 @@ function ustripattribute!(attr, key, u)
     u
 end
 
+extractunit(Q::Type{<:Quantity}) = unit(Q)
+extractunit(Q::Type{<:Gain}) = logunit(Q)
+extractunit(Q::Type{<:Level}) = logunit(Q)
+extractunit(Q::Type{<:Quantity{<:Gain}}) = MixedUnits(Q.parameters[1], Q.parameters[2])
