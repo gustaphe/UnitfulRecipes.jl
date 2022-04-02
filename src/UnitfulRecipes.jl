@@ -60,6 +60,7 @@ end
 # Recipe for (x::AVec, y::AVec, z::Surface) types
 const AVec = AbstractVector
 const AMat{T} = AbstractArray{T,2} where T
+const AArray = AbstractArray
 @recipe function f(x::AVec, y::AVec, z::AMat{T}) where T <: Quantity
     u = get(plotattributes, :zunit, unit(eltype(z)))
     ustripattribute!(plotattributes, :clims, u)
@@ -81,19 +82,19 @@ end
 end
 
 # Recipes for functions
-@recipe function f(f::Function, x::T) where T <: AVec{<:Union{Missing,<:Quantity}}
+@recipe function f(f::Function, x::T) where T <: AArray{<:Union{Missing,<:Quantity}}
     x, f.(x)
 end
-@recipe function f(x::T, f::Function) where T <: AVec{<:Union{Missing,<:Quantity}}
+@recipe function f(x::T, f::Function) where T <: AArray{<:Union{Missing,<:Quantity}}
     x, f.(x)
 end
-@recipe function f(x::T, y::AVec, f::Function) where T <: AVec{<:Union{Missing,<:Quantity}}
+@recipe function f(x::T, y::AArray, f::Function) where T <: AArray{<:Union{Missing,<:Quantity}}
     x, y, f.(x',y)
 end
-@recipe function f(x::AVec, y::T, f::Function) where T <: AVec{<:Union{Missing,<:Quantity}}
+@recipe function f(x::AArray, y::T, f::Function) where T <: AArray{<:Union{Missing,<:Quantity}}
     x, y, f.(x',y)
 end
-@recipe function f(x::T1, y::T2, f::Function) where {T1<:AVec{<:Union{Missing,<:Quantity}}, T2<:AVec{<:Union{Missing,<:Quantity}}}
+@recipe function f(x::T1, y::T2, f::Function) where {T1 <: AArray{<:Union{Missing,<:Quantity}}, T2 <: AArray{<:Union{Missing,<:Quantity}}}
     x, y, f.(x',y)
 end
 @recipe function f(f::Function, u::Units)
@@ -228,16 +229,16 @@ format_unit_label(l, u, f::NTuple{3, Char}) = string(f[1], l, ' ', f[2], u, f[3]
 format_unit_label(l, u, f::Bool) = f ? format_unit_label(l, u, :round) : format_unit_label(l, u, nothing)
 
 const UNIT_FORMATS = Dict(
-                          :round => ('(', ')'),
-                          :square => ('[', ']'),
-                          :curly => ('{', '}'),
-                          :angle => ('<', '>'),
-                          :slash => '/',
-                          :slashround => (" / (", ")"),
-                          :slashsquare => (" / [", "]"),
-                          :slashcurly => (" / {", "}"),
-                          :slashangle => (" / <", ">"),
-                          :verbose => " in units of ",
+    :round => ('(', ')'),
+    :square => ('[', ']'),
+    :curly => ('{', '}'),
+    :angle => ('<', '>'),
+    :slash => '/',
+    :slashround => (" / (", ")"),
+    :slashsquare => (" / [", "]"),
+    :slashcurly => (" / {", "}"),
+    :slashangle => (" / <", ">"),
+    :verbose => " in units of ",
                          )
 
 format_unit_label(l, u, f::Symbol) = format_unit_label(l,u,UNIT_FORMATS[f])

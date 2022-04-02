@@ -109,11 +109,13 @@ end
 end
 
 @testset "With functions" begin
-    x, y = randn(3), randn(3)
+    x, y, z = randn(3), randn(3), randn(3, 3)
     @testset "plot(f, x) / plot(x, f)" begin
         f(x) = x^2
         @test plot(  f, x*m) isa Plots.Plot
         @test plot(x*m,   f) isa Plots.Plot
+        @test plot(z*m,   f) isa Plots.Plot
+        @test plot(f,   z*m) isa Plots.Plot
         g(x) = x*m # If the unit comes from the function only then it throws
         @test_throws DimensionError plot(x, g) isa Plots.Plot
         @test_throws DimensionError plot(g, x) isa Plots.Plot
