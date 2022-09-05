@@ -258,7 +258,6 @@ end
 @testset "Missing values" begin
     x = 1:5
     y = [1.0*u"s", 2.0*u"s", missing, missing, missing]
-    @show typeof(y)
     plt = plot(x,y)
     @test yguide(plt,1) == "s"
 end
@@ -303,16 +302,16 @@ end
 
 @testset "LogScaled plots" begin
     x, y, dbv, v = randn(3)*dBm, randn(3)*dB, rand(3)*dBV, rand(3)V
-    
+
     @testset "no keyword argument" begin
         @test xguide(plot(x,y)) == "dBm"
         @test xseries(plot(x,y)) ≈ ustrip.(x)
         @test yguide(plot(x,y)) == "dB"
         @test yseries(plot(x,y)) ≈ ustrip.(y)
         plot(x, dbv)
-        @test yseries(plot!(x, v)) ≈ ustrip(uconvert.(u"dBV", v))
+        @test yseries(plot!(x, v)) ≈ ustrip.(uconvert.(u"dBV", v))
         plot(x, v)
-        @test yseries(plot!(x, dbv)) ≈ ustrip(uconvert.(u"V", dbv))
+        @test yseries(plot!(x, dbv)) ≈ ustrip.(uconvert.(u"V", dbv))
     end
 
     @testset "labels" begin
@@ -324,12 +323,12 @@ end
         @test xguide(plot(x, y, xlabel=P"hello", ylabel=P"hello")) == "hello"
         @test yguide(plot(x, y, xlabel= "hello", ylabel= "hello")) == "hello (dB)"
         @test yguide(plot(x, y, xlabel=P"hello", ylabel=P"hello")) == "hello"
-    end  
+    end
 end
 
 @testset "mixed Log units" begin
     x, y, x1, y1 = randn(3)*dB/Hz, randn(3)*dB*m, rand(3)*B/MHz, rand(3)*B*cm
-    
+
     @testset "no keyword argument" begin
         dbhz = Sys.isapple() ? "dB Hz⁻¹" : "dB Hz^-1"  # expect fancy exponent or not?
         @test xguide(plot(x,y)) ==  dbhz
@@ -339,8 +338,8 @@ end
     end
     @testset "plot!" begin
         plot(x, y)
-        @test xseries(plot!(x1, y)) ≈ ustrip(ustrip(uconvert.(u"dB/Hz", x1)))
-        @test yseries(plot!(x1, y1)) ≈ ustrip(ustrip(uconvert.(u"dB*m", y1)))
+        @test xseries(plot!(x1, y)) ≈ ustrip.(ustrip.(uconvert.(u"dB/Hz", x1)))
+        @test yseries(plot!(x1, y1)) ≈ ustrip.(ustrip.(uconvert.(u"dB*m", y1)))
     end
 
 end
